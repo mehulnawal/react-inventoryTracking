@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, Building, Sun, Moon, Github, Chrome, ChromeIcon } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Building, Sun, Moon, Github, Chrome, ChromeIcon, AlignStartHorizontal } from 'lucide-react';
 import { ThemeContext } from './Theme';
 import { NavLink, useNavigate } from 'react-router';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, GithubAuthProvider } from 'firebase/auth';
 import { Firebase } from './Firebase';
+import { get } from 'firebase/database';
 
 export const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -109,6 +110,27 @@ export const Login = () => {
             })
     }
 
+    // Github Sign up
+    function handleGithubSignUp() {
+        const auth = getAuth(Firebase);
+        const provider = new GithubAuthProvider();
+        setLoading(true);
+        setDisabled((prev => ({ ...prev, github: true })));
+        signInWithPopup(auth, provider)
+            .then(() => {
+                alert("Login Successful")
+                navigate('/userDashboard');
+            }).catch((error) => {
+                if (error == "auth/cancelled-popup-request") {
+                    setLoading(false);
+                }
+                else setLoading(true);
+            }).finally(() => {
+                setLoading(false);
+                setDisabled((prev => ({ ...prev, github: false })));
+            })
+    }
+
     // handle form submit
     function handleFormSubmit(e) {
         e.preventDefault();
@@ -188,13 +210,20 @@ export const Login = () => {
 
                         {/* Github Sign Up */}
                         <button
-                            // onClick={handleGoogleSignUp}
-                            // disabled={isLoading}
-                            className={`w-fit whitespace-nowrap group relative flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium transition-all duration-200 bg-gradient-to-r from-gray-800 to-black text-white`}
+                            onClick={handleGithubSignUp}
+                            disabled={loading}
+                            className={`w-fit whitespace-nowrap group relative flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium transition-all duration-200 bg-gradient-to-r from-gray-800 to-black text-white
+                            ${loading == true ? 'bg-gray-500 text-white  cursor-not-allowed' : 'bg-gradient-to-r from-[#4285F4] to-[#357ae8]'}`}
                         >
-                            <Github className="w-5 h-5 mr-3" />
-                            Sign Up with Github
-                            {/* {isLoading ? 'Creating account...' : 'Sign Up with Github'} */}
+                            {disabled.github == true ? <div className='flex items-center space-x-2'>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                <div>Creating account...</div>
+                            </div>
+                                :
+                                <div className='flex items-center space-x-2'>
+                                    <Github className="w-5 h-5 mr-3" />
+                                    <div>Sign up with Github</div>
+                                </div>}
                         </button>
                     </div>
 
@@ -205,7 +234,7 @@ export const Login = () => {
                         </div>
                         <div className="relative flex justify-center text-sm">
                             <span className={`px-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
-                                Or register with email
+                                Or login with email
                             </span>
                         </div>
                     </div>
