@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router"
 import { UserNavbar } from "./Components/Frontend/UserNavbar"
-import { Registration } from "./Components/Global/registration"
+import { Registration } from "./Components/Global/Registration"
 import { Login } from "./Components/Global/Login"
 import { ThemeProvider } from "./Components/Global/Theme"
 import { ErrorPage } from "./Components/Global/ErrorPage"
