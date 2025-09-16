@@ -1,0 +1,6 @@
+Components - 
+
+Login, Registration
+User - User navbar, User Dashboard , User Profile, Products
+Admin - Admin navbar, Admin Dashboard, Admin User management
+Global - Error page(404, 403), Firebase, Axios, Theme, 
