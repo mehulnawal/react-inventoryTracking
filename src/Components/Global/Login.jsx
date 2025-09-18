@@ -100,7 +100,7 @@ export const Login = () => {
                 navigate('/userDashboard');
                 setLoading(false);
             }).catch((error) => {
-                if (error == "auth/cancelled-popup-request") {
+                if (error.code == "auth/cancelled-popup-request") {
                     setLoading(false);
                 }
                 else setLoading(true);
@@ -121,10 +121,18 @@ export const Login = () => {
                 alert("Login Successful")
                 navigate('/userDashboard');
             }).catch((error) => {
-                if (error == "auth/cancelled-popup-request") {
+                if (error.code == "auth/cancelled-popup-request") {
                     setLoading(false);
                 }
-                else setLoading(true);
+                if (error.code == "auth/account-exists-with-different-credential)") {
+                    alert("Account exists with different credentials")
+                    setLoading(false);
+                }
+                console.log(error);
+                // else {
+                //     alert('Something went wrong', error.message);
+                //     setLoading(false);
+                // }
             }).finally(() => {
                 setLoading(false);
                 setDisabled((prev => ({ ...prev, github: false })));
@@ -153,15 +161,12 @@ export const Login = () => {
                     setFormData({ email: '', password: '' });
                     navigate('/userDashboard');
                 })
-                .catch(() => {
+                .catch((error) => {
                     if (error.code == 'auth/user-not-found') {
                         alert("User not found. Register yourself");
                     }
                     else if (error.code == 'auth/wrong-password') {
                         alert("Password is wrong");
-                    }
-                    else {
-                        alert("Something went wrong", error.message);
                     }
                 })
                 .finally(() => {
@@ -188,6 +193,38 @@ export const Login = () => {
                         </div>
                     </div>
 
+                    {/* Demo Credentials Box - Add this after the theme toggle and before the social login buttons */}
+                    <div className={`mb-6 p-4 rounded-lg border-2 border-dashed ${theme === 'dark' ? 'border-gray-600 bg-gray-800/50' : 'border-gray-300 bg-gray-50'}`}>
+                        <div className="text-center mb-3">
+                            <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-yellow-400' : 'text-orange-600'} flex items-center justify-center`}>
+                                <AlignStartHorizontal className="w-4 h-4 mr-2" />
+                                Demo Credentials
+                            </h3>
+                        </div>
+
+                        <div className="space-y-3">
+                            {/* Admin Credentials */}
+                            <div className={`p-3 rounded-md ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-white'} border ${theme === 'dark' ? 'border-gray-600' : 'border-gray-200'}`}>
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className={`text-xs font-medium ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
+                                        👑 Admin Access
+                                    </span>
+                                </div>
+                                <div className={`text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                                    <div className="flex justify-between">
+                                        <span>Email:</span>
+                                        <span className="font-mono">admin123@gmail.com</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Password:</span>
+                                        <span className="font-mono">admin2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div className='flex justify-center space-x-3 items-center w-fit'>
 
                         {/* Google Sign Up */}
@@ -212,19 +249,22 @@ export const Login = () => {
                         <button
                             onClick={handleGithubSignUp}
                             disabled={loading}
-                            className={`w-fit whitespace-nowrap group relative flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium transition-all duration-200 bg-gradient-to-r from-gray-800 to-black text-white
-                            ${loading == true ? 'bg-gray-500 text-white  cursor-not-allowed' : 'bg-gradient-to-r from-[#4285F4] to-[#357ae8]'}`}
+                            className={`w-fit whitespace-nowrap group relative flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium transition-all duration-200  bg-gradient-to-r from-gray-800 to-black text-white  
+                            ${loading ? 'cursor-not-allowed opacity-70' : ''}`}
                         >
-                            {disabled.github == true ? <div className='flex items-center space-x-2'>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                <div>Creating account...</div>
-                            </div>
-                                :
+                            {disabled.github ? (
+                                <div className='flex items-center space-x-2'>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    <div>Signing in...</div>
+                                </div>
+                            ) : (
                                 <div className='flex items-center space-x-2'>
                                     <Github className="w-5 h-5 mr-3" />
-                                    <div>Sign up with Github</div>
-                                </div>}
+                                    <div>Sign in with GitHub</div>
+                                </div>
+                            )}
                         </button>
+
                     </div>
 
                     {/* Divider */}
@@ -288,23 +328,6 @@ export const Login = () => {
                                 </button>
                             </div>
                             <span className='text-red-500'>{error && error.password}</span>
-                        </div>
-
-                        {/* remember me */}
-                        <div className="flex items-center justify-between">
-                            <label className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    name="rememberMe"
-                                    checked={formData.rememberMe}
-                                    onChange={handleChange}
-                                    className={`h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer`}
-                                />
-                                <span className="ml-2 text-sm">Remember me</span>
-                            </label>
-                            <a href="#" className="text-sm text-green-600 hover:text-green-500">
-                                Forgot password?
-                            </a>
                         </div>
 
                         <button

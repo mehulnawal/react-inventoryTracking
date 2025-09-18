@@ -3,171 +3,275 @@ import {
     ShoppingCart, Users, TrendingUp, TrendingDown, BarChart3,
     User, Mail, Lock, Eye, EyeOff
 } from 'lucide-react';
+import { useContext, useEffect } from 'react';
+import { useState } from 'react';
+import { ThemeContext } from '../Global/Theme';
+import { get, getDatabase, onValue, push, ref, remove, set, update } from 'firebase/database';
+import { Firebase } from '../Global/Firebase';
 
-const mockProducts = [
-    { id: 1, name: "Laptop", category: "Electronics", price: 50000, stock: 12, image: "https://via.placeholder.com/150" },
-    { id: 2, name: "Mouse", category: "Electronics", price: 1500, stock: 45, image: "https://via.placeholder.com/150" },
-    { id: 3, name: "Keyboard", category: "Electronics", price: 3000, stock: 8, image: "https://via.placeholder.com/150" },
-    { id: 4, name: "Monitor", category: "Electronics", price: 25000, stock: 3, image: "https://via.placeholder.com/150" },
-    { id: 5, name: "Desk Chair", category: "Furniture", price: 8000, stock: 15, image: "https://via.placeholder.com/150" },
-    { id: 6, name: "Table Lamp", category: "Furniture", price: 2500, stock: 7, image: "https://via.placeholder.com/150" },
-    { id: 7, name: "Headphones", category: "Electronics", price: 4500, stock: 20, image: "https://via.placeholder.com/150" },
-    { id: 8, name: "Webcam", category: "Electronics", price: 6000, stock: 5, image: "https://via.placeholder.com/150" }
-];
 
 export const AdminDashboard = () => {
+
+    const [categoryValue, setCategoryValue] = useState({})
+    const [products, setProducts] = useState({})
+    const { theme } = useContext(ThemeContext)
+    const [formData, setFormData] = useState({
+        name: '',
+        quantity: 0,
+        category: '',
+        image: ''
+    })
+    const [productImage, setProductImage] = useState({
+        keyboard1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK2KxRfURBKuQDBRDOygqGCdLjl65gzLzwcg&s',
+        keyboard2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpaljPhicwyg-NlLTMsYWZPHPUclYpVpcPwA&s',
+        laptop1: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeFpsJF8rkFCxCltNQl96YLDqbjGIBhwRk0Q&s',
+        laptop2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRswDVM2T6P6VadgpKtPKLmUblovA2wAj8v2Q&s',
+    })
+
+    const [isEdit, setIsEdit] = useState(false);
+    const [editId, setEditId] = useState(null);
+
+    // storing product category from backend
+    useEffect(() => {
+        const db = getDatabase(Firebase);
+        const productCategoryRef = ref(db, '/productsCategory')
+        onValue(productCategoryRef, (res) => {
+            const data = res.val();
+            setCategoryValue(data);
+        })
+    }, [])
+
+    function handleFormData(e) {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
+    // add product
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        const db = getDatabase(Firebase);
+        const productImage2 = Object.entries(productImage).filter(v => v[0] == formData.category);
+
+        if (isEdit == false) {
+            await set(push(ref(db, '/products')), {
+                name: formData.name,
+                quantity: formData.quantity,
+                category: formData.category,
+                image: productImage2[0][1],
+            })
+            alert("Product Added")
+            setFormData({ name: '', category: '', quantity: '' });
+        }
+        else {
+            const productRef = ref(db, `/products/${editId}`)
+            update(productRef, {
+                name: formData.name,
+                quantity: formData.quantity,
+                category: formData.category,
+                image: productImage2[0][1]
+            })
+            alert("Product Edited")
+            setIsEdit(false)
+            setFormData({ name: '', category: '', quantity: '' });
+        }
+    }
+
+    const productsList = () => {
+        const db = getDatabase(Firebase);
+        const productRef = ref(db, '/products');
+        onValue(productRef, (res) => {
+            const data = res.val();
+            setProducts(data);
+        })
+    }
+    useEffect(() => {
+        return productsList();
+    }, [])
+
+    // Handle delete function
+    function handleDelete(id) {
+        if (confirm("Do you want to delete the product")) {
+            const db = getDatabase(Firebase);
+            const productRef = ref(db, `/products/${id}`);
+            remove(productRef);
+            alert("Product Deleted");
+            productsList();
+        }
+    }
+
+    // Handle edit
+    async function handleEdit(id) {
+        setIsEdit(true);
+        setEditId(id);
+        const db = getDatabase(Firebase);
+        const productRef = ref(db, `/products/${id}`)
+        const value = await get(productRef)
+        const data = value.val();
+        setFormData({ category: data.category, name: data.name, quantity: data.quantity });
+    }
+
     return (
-        <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Admin Dashboard</h2>
+        <div className={`p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'} min-h-screen`}>
+            <h2 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-8`}>Admin Dashboard</h2>
 
-            {/* Analytics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-xl text-white">
-                    <div className="flex items-center justify-between">
+            {/* Add Product Form */}
+            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-sm border p-6 mb-8`}>
+                <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-6`}>
+                    {isEdit == true ? 'Edit product' : 'Add New Product'}
+                </h3>
+
+                <form className="space-y-6" onSubmit={handleFormSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        {/* Product Name */}
                         <div>
-                            <p className="text-blue-100 mb-1">Total Revenue</p>
-                            <p className="text-3xl font-bold">₹12,45,000</p>
-                            <p className="text-blue-100 text-sm mt-2">+25% from last month</p>
+                            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                                Product Name
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleFormData}
+                                placeholder="Enter product name"
+                                className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                            />
                         </div>
-                        <TrendingUp className="h-12 w-12 text-blue-200" />
-                    </div>
-                </div>
 
-                <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-xl text-white">
-                    <div className="flex items-center justify-between">
+                        {/* Units */}
                         <div>
-                            <p className="text-green-100 mb-1">Total Orders</p>
-                            <p className="text-3xl font-bold">2,340</p>
-                            <p className="text-green-100 text-sm mt-2">+15% from last month</p>
-                        </div>
-                        <ShoppingCart className="h-12 w-12 text-green-200" />
-                    </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6 rounded-xl text-white">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-purple-100 mb-1">Active Users</p>
-                            <p className="text-3xl font-bold">456</p>
-                            <p className="text-purple-100 text-sm mt-2">+8% from last month</p>
-                        </div>
-                        <Users className="h-12 w-12 text-purple-200" />
-                    </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 rounded-xl text-white">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-orange-100 mb-1">Products</p>
-                            <p className="text-3xl font-bold">1,234</p>
-                            <p className="text-orange-100 text-sm mt-2">+12% from last month</p>
-                        </div>
-                        <Package className="h-12 w-12 text-orange-200" />
-                    </div>
-                </div>
-            </div>
-
-            {/* Charts and Analytics */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Sales Trends</h3>
-                    <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                        <div className="text-center">
-                            <BarChart3 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                            <p className="text-gray-500 dark:text-gray-400">Sales Chart Placeholder</p>
-                            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Interactive chart would be displayed here</p>
+                            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                                Units
+                            </label>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value={formData.quantity}
+                                onChange={handleFormData}
+                                placeholder="Enter number of units"
+                                className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                            />
                         </div>
                     </div>
-                </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Top Products</h3>
-                    <div className="space-y-4">
-                        {mockProducts.slice(0, 5).map((product, index) => (
-                            <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                <div className="flex items-center">
-                                    <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                                        {index + 1}
-                                    </span>
-                                    <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg mr-3" />
-                                    <div>
-                                        <p className="font-medium text-gray-900 dark:text-white">{product.name}</p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">{product.category}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-semibold text-gray-900 dark:text-white">₹{product.price.toLocaleString()}</p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">{product.stock} sold</p>
-                                </div>
-                            </div>
-                        ))}
+                    {/* Category Dropdown */}
+                    <div>
+                        <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                            Category
+                        </label>
+                        <select
+                            name="category"
+                            value={formData.category}
+                            onChange={handleFormData}
+                            className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300 bg-white text-gray-900'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                        >
+                            <option value="">Select Option</option>
+                            {Object.keys(categoryValue).map(v => {
+                                return <>
+                                    <option value={v}>{v}</option>
+                                </>
+                            })}
+                        </select>
                     </div>
-                </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium flex items-center"
+                        >
+                            <Plus className="h-4 w-4 mr-2" />
+                            {isEdit == true ? 'Edit product' : 'Add New Product'}
+                        </button>
+                    </div>
+                </form>
             </div>
 
             {/* Product Management Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
+            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-sm border p-6`}>
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Product Management</h3>
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Product
-                    </button>
+                    <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Management</h3>
                 </div>
 
+                {/* products */}
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-gray-700">
+                        <thead className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'}`}>
                             <tr>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Product</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Stock</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Product Image</th>
+
+                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Category</th>
+
+                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Stock</th>
+
+                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-                            {mockProducts.map(product => (
-                                <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg mr-4" />
-                                            <div>
-                                                <p className="font-medium text-gray-900 dark:text-white">{product.name}</p>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">ID: {product.id}</p>
+
+                        <tbody className={`${theme === 'dark' ? 'divide-gray-600' : 'divide-gray-200'} divide-y`}>
+                            {Object.entries(products).length > 0 || products != null || products != undefined ?
+                                Object.entries(products).map(([id, product]) => (
+                                    <tr key={id} className={`${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+
+                                        {/* Image */}
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg mr-4" />
+                                                <div>
+                                                    <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{product.name}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">{product.category}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-white">₹{product.price.toLocaleString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${product.stock < 10
-                                            ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300'
-                                            : product.stock < 20
-                                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300'
-                                                : 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-                                            }`}>
-                                            {product.stock} units
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex space-x-2">
-                                            <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors">
-                                                <Edit className="h-4 w-4" />
-                                            </button>
-                                            <button className="text-red-600 hover:text-red-900 dark:text-red-400 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
+                                        </td>
+
+                                        {/*  */}
+                                        <td className={`px-6 py-4 whitespace-nowrap ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{product.category}
+                                        </td>
+
+                                        {/*  */}
+                                        <td className="px-6 py-4 whitespace-nowrap" >
+                                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${product.quantity < 10
+                                                ? theme === 'dark' ? 'bg-red-900/50 text-red-300' : 'bg-red-100 text-red-800'
+                                                : product.quantity < 20
+                                                    ? theme === 'dark' ? 'bg-yellow-900/50 text-yellow-300' : 'bg-yellow-100 text-yellow-800'
+                                                    : theme === 'dark' ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-800'
+                                                }`}>
+                                                {product.quantity} units
+                                            </span>
+                                        </td>
+
+                                        {/* Action buttons */}
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex space-x-2">
+
+                                                {/* Edit */}
+                                                <button
+                                                    className={`${theme === 'dark' ? 'text-blue-400 hover:bg-blue-900/20' : 'text-blue-600 hover:bg-blue-50'} hover:text-blue-900 p-2 rounded-lg transition-colors`}
+                                                    onClick={() => handleEdit(id)}
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </button>
+
+                                                {/* Delete */}
+                                                <button
+                                                    className={`${theme === 'dark' ? 'text-red-400 hover:bg-red-900/20' : 'text-red-600 hover:bg-red-50'} hover:text-red-900 p-2 rounded-lg transition-colors`}
+                                                    onClick={() => handleDelete(id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                                : <tr>
+                                    <td colSpan="6" className={`px-6 py-16 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        <div className="flex flex-col items-center">
+                                            <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                            <p className="text-lg font-medium mb-1">No Products Found</p>
+                                            <p className="text-sm">Add your first product to get started</p>
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                            }
                         </tbody>
                     </table>
                 </div>

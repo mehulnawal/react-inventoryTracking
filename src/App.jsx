@@ -6,11 +6,7 @@ import { ThemeProvider } from "./Components/Global/Theme"
 import { ErrorPage } from "./Components/Global/ErrorPage"
 import { Footer } from "./Components/Global/Footer"
 import { UserDashboard } from "./Components/Frontend/UserDashBoard"
-import { AdminNavbar } from "./Components/Backend/AdminNavbar"
 import { AdminDashboard } from "./Components/Backend/AdminDashBoard"
-import { ProfileComponent } from "./Components/Frontend/UserProfile"
-import { ProductComponent } from "./Components/Frontend/Products"
-import { AdminUserManagement } from "./Components/Backend/AdminUser"
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { Firebase } from "./Components/Global/Firebase"
 import { useEffect, useState } from "react"
@@ -37,36 +33,30 @@ function App() {
           <Routes>
 
             {/* Public Routes */}
-            <Route>
-              <Route path="/" element={<Login />} />
-              <Route path="/register" element={<Registration />} />
-              <Route path="/footer" element={<Footer />} />
-            </Route>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Registration />} />
+            <Route path="/footer" element={<Footer />} />
 
             {/* Protected User Routes */}
-            {user && <Route element={<UserNavbar />}>
-              <Route path="/userDashboard" element={<UserDashboard />} />
-              <Route path="/userProfile" element={<ProfileComponent />} />
-              <Route path="/inventory" element={<ProductComponent />} />
-            </Route>
-            }
-
-            {/* Admin Routes */}
-            {admin ?
-              <Route element={<AdminNavbar />}>
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/adminUserManage" element={<AdminUserManagement />} />
-              </Route>
-              : (
+            <Route element={<UserNavbar />}>
+              {user ? (
                 <>
-                  <Route path="/admin" element={<ErrorPage type='access-denied' />} />
-                  <Route path="/adminUserManage" element={<AdminUserManagement type='access-denied' />} />
-                </>
-              )
-            }
+                  {/* //  user Routes */}
+                  <Route path="/userDashboard" element={<UserDashboard />} />
+
+                  {/* // Admin Routes */}
+                  {admin
+                    ? <Route path="/admin" element={<AdminDashboard />} />
+                    : <Route path="/admin" element={<ErrorPage type='access-denied' />} />
+                  }
+                </>)
+                : <Route path="/" element={<Login />} />
+              }
+            </Route>
 
             {/* Error page - 404  */}
-            <Route path="*" element={<ErrorPage type="404" />} />
+            {/* <Route path="*" element={<ErrorPage type="404" />} /> */}
+
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
