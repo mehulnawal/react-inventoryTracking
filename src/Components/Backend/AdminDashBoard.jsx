@@ -111,17 +111,17 @@ export const AdminDashboard = () => {
     }
 
     return (
-        <div className={`p-6 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'} min-h-screen`}>
-            <h2 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-8`}>Admin Dashboard</h2>
+        <div className={`p-4 sm:p-6 max-w-screen-xl mx-auto ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'} min-h-screen`}>
+            <h2 className={`text-2xl sm:text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-8`}>Admin Dashboard</h2>
 
             {/* Add Product Form */}
-            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-sm border p-6 mb-8`}>
-                <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-6`}>
-                    {isEdit == true ? 'Edit product' : 'Add New Product'}
+            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-sm border p-4 sm:p-6 mb-8`}>
+                <h3 className={`text-lg sm:text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-6`}>
+                    {isEdit ? 'Edit product' : 'Add New Product'}
                 </h3>
 
                 <form className="space-y-6" onSubmit={handleFormSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
 
                         {/* Product Name */}
                         <div>
@@ -134,7 +134,7 @@ export const AdminDashboard = () => {
                                 value={formData.name}
                                 onChange={handleFormData}
                                 placeholder="Enter product name"
-                                className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                                className={`w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                             />
                         </div>
 
@@ -149,7 +149,7 @@ export const AdminDashboard = () => {
                                 value={formData.quantity}
                                 onChange={handleFormData}
                                 placeholder="Enter number of units"
-                                className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                                className={`w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400' : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                             />
                         </div>
                     </div>
@@ -163,14 +163,12 @@ export const AdminDashboard = () => {
                             name="category"
                             value={formData.category}
                             onChange={handleFormData}
-                            className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300 bg-white text-gray-900'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                            className={`w-full px-3 py-2 sm:px-4 sm:py-3 rounded-lg border ${theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300 bg-white text-gray-900'} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                         >
                             <option value="">Select Option</option>
-                            {Object.keys(categoryValue).map(v => {
-                                return <>
-                                    <option value={v}>{v}</option>
-                                </>
-                            })}
+                            {Object.keys(categoryValue).map((v) => (
+                                <option key={v} value={v}>{v}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -178,83 +176,79 @@ export const AdminDashboard = () => {
                     <div className="flex justify-end">
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium flex items-center"
+                            className="px-5 py-2.5 sm:px-6 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium flex items-center"
                         >
                             <Plus className="h-4 w-4 mr-2" />
-                            {isEdit == true ? 'Edit product' : 'Add New Product'}
+                            {isEdit ? 'Edit product' : 'Add New Product'}
                         </button>
                     </div>
                 </form>
             </div>
 
             {/* Product Management Section */}
-            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-sm border p-6`}>
+            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-sm border p-4 sm:p-6`}>
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Management</h3>
+                    <h3 className={`text-lg sm:text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Product Management</h3>
                 </div>
 
-                {/* products */}
+                {/* Table Scroll container */}
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full min-w-[600px] sm:min-w-full table-auto">
                         <thead className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'}`}>
                             <tr>
-                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Product Image</th>
-
-                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Category</th>
-
-                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Stock</th>
-
-                                <th className={`px-6 py-4 text-left text-xs font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Actions</th>
+                                <th className={`px-3 py-3 sm:px-6 sm:py-4 text-left text-xs sm:text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Product Image</th>
+                                <th className={`px-3 py-3 sm:px-6 sm:py-4 text-left text-xs sm:text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Category</th>
+                                <th className={`px-3 py-3 sm:px-6 sm:py-4 text-left text-xs sm:text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Stock</th>
+                                <th className={`px-3 py-3 sm:px-6 sm:py-4 text-left text-xs sm:text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Actions</th>
                             </tr>
                         </thead>
-
                         <tbody className={`${theme === 'dark' ? 'divide-gray-600' : 'divide-gray-200'} divide-y`}>
-                            {Object.entries(products).length > 0 || products != null || products != undefined ?
+                            {Object.entries(products).length > 0 && products != null && products != undefined ? (
                                 Object.entries(products).map(([id, product]) => (
                                     <tr key={id} className={`${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
-
                                         {/* Image */}
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">
                                             <div className="flex items-center">
-                                                <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg mr-4" />
+                                                <img src={product.image} alt={product.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg mr-3 sm:mr-4" />
                                                 <div>
-                                                    <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{product.name}</p>
+                                                    <p className={`font-medium text-sm sm:text-base ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{product.name}</p>
                                                 </div>
                                             </div>
                                         </td>
 
-                                        {/*  */}
-                                        <td className={`px-6 py-4 whitespace-nowrap ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{product.category}
+                                        {/* Category */}
+                                        <td className={`px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm sm:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                                            {product.category}
                                         </td>
 
-                                        {/*  */}
-                                        <td className="px-6 py-4 whitespace-nowrap" >
-                                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${product.quantity < 10
+                                        {/* Stock */}
+                                        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm sm:text-base">
+                                            <span className={`inline-flex px-2.5 py-1.5 text-xs sm:text-sm font-semibold rounded-full ${product.quantity < 10
                                                 ? theme === 'dark' ? 'bg-red-900/50 text-red-300' : 'bg-red-100 text-red-800'
                                                 : product.quantity < 20
                                                     ? theme === 'dark' ? 'bg-yellow-900/50 text-yellow-300' : 'bg-yellow-100 text-yellow-800'
                                                     : theme === 'dark' ? 'bg-green-900/50 text-green-300' : 'bg-green-100 text-green-800'
-                                                }`}>
+                                                }`}
+                                            >
                                                 {product.quantity} units
                                             </span>
                                         </td>
 
-                                        {/* Action buttons */}
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex space-x-2">
-
-                                                {/* Edit */}
+                                        {/* Actions */}
+                                        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">
+                                            <div className="flex space-x-1 sm:space-x-2">
                                                 <button
-                                                    className={`${theme === 'dark' ? 'text-blue-400 hover:bg-blue-900/20' : 'text-blue-600 hover:bg-blue-50'} hover:text-blue-900 p-2 rounded-lg transition-colors`}
+                                                    className={`${theme === 'dark' ? 'text-blue-400 hover:bg-blue-900/20' : 'text-blue-600 hover:bg-blue-50'} hover:text-blue-900 p-1.5 sm:p-2 rounded-lg transition-colors`}
                                                     onClick={() => handleEdit(id)}
+                                                    aria-label="Edit product"
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                 </button>
 
-                                                {/* Delete */}
                                                 <button
-                                                    className={`${theme === 'dark' ? 'text-red-400 hover:bg-red-900/20' : 'text-red-600 hover:bg-red-50'} hover:text-red-900 p-2 rounded-lg transition-colors`}
+                                                    className={`${theme === 'dark' ? 'text-red-400 hover:bg-red-900/20' : 'text-red-600 hover:bg-red-50'} hover:text-red-900 p-1.5 sm:p-2 rounded-lg transition-colors`}
                                                     onClick={() => handleDelete(id)}
+                                                    aria-label="Delete product"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </button>
@@ -262,8 +256,9 @@ export const AdminDashboard = () => {
                                         </td>
                                     </tr>
                                 ))
-                                : <tr>
-                                    <td colSpan="6" className={`px-6 py-16 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className={`px-6 py-16 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                                         <div className="flex flex-col items-center">
                                             <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
                                             <p className="text-lg font-medium mb-1">No Products Found</p>
@@ -271,7 +266,7 @@ export const AdminDashboard = () => {
                                         </div>
                                     </td>
                                 </tr>
-                            }
+                            )}
                         </tbody>
                     </table>
                 </div>

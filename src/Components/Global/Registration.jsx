@@ -239,63 +239,59 @@ export const Registration = () => {
 
     return (
         <>
-            <div className={`min-h-screen  flex items-center justify-center p-4 ${theme == 'dark' ? 'bg-[#212121] text-white' : 'bg-gradient-to-br from-green-50 via-blue-50 to-purple-50'} text-[#212121]`}>
+            <div className={`min-h-screen flex items-center justify-center p-4 ${theme === 'dark' ? 'bg-[#212121] text-white' : 'bg-gradient-to-br from-green-50 via-blue-50 to-purple-50'} text-[#212121]`}>
+                <div className="w-full max-w-3xl sm:max-w-2xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+                    <div className="rounded-2xl shadow-xl p-6 sm:p-8 border w-full relative">
 
-                <div className="w-full max-w-2xl">
-                    <div className="rounded-2xl shadow-xl p-8 border">
-
-                        {/* title */}
+                        {/* Title */}
                         <div className="text-center mb-8 relative">
-                            <div className="w-16 h-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                <User className="w-8 h-8" />
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                <User className="w-7 h-7 sm:w-8 sm:h-8" />
                             </div>
-                            <h1 className="text-2xl font-bold ">Create Account</h1>
-                            <p className="mt-2">Join us to manage your inventory efficiently</p>
+                            <h1 className="text-xl sm:text-2xl font-bold">Create Account</h1>
+                            <p className="mt-2 text-sm sm:text-base">Join us to manage your inventory efficiently</p>
 
-                            {/* theme */}
-                            <div onClick={() => setTheme(theme == 'dark' ? 'light' : 'dark')} className='absolute top-0 right-0 cursor-pointer'>
-                                {theme == 'dark' ? <Sun /> : <Moon />}
+                            {/* Theme toggle */}
+                            <div onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className='absolute top-2 right-2 cursor-pointer'>
+                                {theme === 'dark' ? <Sun /> : <Moon />}
                             </div>
                         </div>
 
-                        {/* form */}
+                        {/* Form */}
                         <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
 
                             {/* First and Last name */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                                {/* first name */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">First Name</label>
+                                    <label className="block text-sm sm:text-base font-medium mb-2">First Name</label>
                                     <input
                                         type="text"
                                         name="firstName"
                                         value={formData.firstName}
                                         onChange={handleChange}
-                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                         placeholder="John"
                                     />
-                                    <span className='text-red-500'>{error && error.firstName}</span>
+                                    <span className="text-red-500 text-xs sm:text-sm">{error.firstName}</span>
                                 </div>
 
-                                {/* last name */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Last Name</label>
+                                    <label className="block text-sm sm:text-base font-medium mb-2">Last Name</label>
                                     <input
                                         type="text"
                                         name="lastName"
                                         value={formData.lastName}
                                         onChange={handleChange}
-                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                         placeholder="Doe"
                                     />
-                                    <span className='text-red-500'>{error && error.lastName}</span>
+                                    <span className="text-red-500 text-xs sm:text-sm">{error.lastName}</span>
                                 </div>
                             </div>
 
                             {/* Email */}
                             <div>
-                                <label className="block text-sm font-medium mb-2">Email Address</label>
+                                <label className="block text-sm sm:text-base font-medium mb-2">Email Address</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <Mail className="h-5 w-5 text-gray-400" />
@@ -305,19 +301,17 @@ export const Registration = () => {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                        className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                         placeholder="john@company.com"
                                     />
                                 </div>
-                                <span className='text-red-500'>{error && error.email}</span>
+                                <span className="text-red-500 text-xs sm:text-sm">{error.email}</span>
                             </div>
 
                             {/* Phone Number & Company */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                                {/* phone number */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+                                    <label className="block text-sm sm:text-base font-medium mb-2">Phone Number</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Phone className="h-5 w-5 text-gray-400" />
@@ -327,16 +321,15 @@ export const Registration = () => {
                                             name="phoneNumber"
                                             value={formData.phoneNumber}
                                             onChange={handleChange}
-                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                             placeholder="XXXXXXXXXX"
                                         />
                                     </div>
-                                    <span className='text-red-500'>{error && error.phoneNumber}</span>
+                                    <span className="text-red-500 text-xs sm:text-sm">{error.phoneNumber}</span>
                                 </div>
 
-                                {/* company */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Company</label>
+                                    <label className="block text-sm sm:text-base font-medium mb-2">Company</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Building className="h-5 w-5 text-gray-400" />
@@ -346,19 +339,18 @@ export const Registration = () => {
                                             name="companyName"
                                             value={formData.companyName}
                                             onChange={handleChange}
-                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                             placeholder="Your Company"
                                         />
                                     </div>
-                                    <span className='text-red-500'>{error && error.companyName}</span>
+                                    <span className="text-red-500 text-xs sm:text-sm">{error.companyName}</span>
                                 </div>
                             </div>
 
                             {/* Password and Confirm Password */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* password */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Password</label>
+                                    <label className="block text-sm sm:text-base font-medium mb-2">Password</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Lock className="h-5 w-5 text-gray-400" />
@@ -368,7 +360,7 @@ export const Registration = () => {
                                             name="password"
                                             value={formData.password}
                                             onChange={handleChange}
-                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                             placeholder="Create password"
                                         />
                                         <button
@@ -383,12 +375,11 @@ export const Registration = () => {
                                             )}
                                         </button>
                                     </div>
-                                    <span className='text-red-500'>{error && error.password}</span>
+                                    <span className="text-red-500 text-xs sm:text-sm">{error.password}</span>
                                 </div>
 
-                                {/* Confirm password */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Confirm Password</label>
+                                    <label className="block text-sm sm:text-base font-medium mb-2">Confirm Password</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Lock className="h-5 w-5 text-gray-400" />
@@ -398,12 +389,12 @@ export const Registration = () => {
                                             name="confirmPassword"
                                             value={formData.confirmPassword}
                                             onChange={handleChange}
-                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'} `}
+                                            className={`w-full pl-10 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors placeholder:text-gray-600 ${theme === 'dark' ? 'placeholder:text-gray-400 bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
                                             placeholder="Confirm password"
                                         />
                                         <button
                                             type="button"
-                                            className={`absolute inset-y-0 right-0 pr-3 flex items-center ${theme == 'dark' ? 'placeholder:text-gray-400' : 'placeholder:text-gray-600'}`}
+                                            className={`absolute inset-y-0 right-0 pr-3 flex items-center`}
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                         >
                                             {showConfirmPassword ? (
@@ -413,56 +404,54 @@ export const Registration = () => {
                                             )}
                                         </button>
                                     </div>
-                                    <span className='text-red-500'>{error && error.confirmPassword}</span>
+                                    <span className="text-red-500 text-xs sm:text-sm">{error.confirmPassword}</span>
                                 </div>
                             </div>
 
                             {/* Terms & Conditions */}
-                            <div className="flex items-center">
-                                <input type="checkbox"
+                            <div className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
                                     name="terms"
                                     checked={formData.terms}
                                     onChange={handleChange}
                                     className="h-4 w-4 rounded cursor-pointer"
+                                    id="terms"
                                 />
-                                <span className="ml-2 text-sm">
-                                    <div>I agree to the <span className="text-green-600 hover:text-green-500">Terms of Service </span> and
-                                        <span className="text-green-600 hover:text-green-500 ml-1">Privacy Policy</span>
-                                    </div>
-                                </span>
-                                <span className='text-red-500 ml-5'>{error && error.terms}</span>
+                                <label htmlFor="terms" className="text-sm sm:text-base cursor-pointer">
+                                    I agree to the <span className="text-green-600 hover:text-green-500">Terms of Service</span> and{' '}
+                                    <span className="text-green-600 hover:text-green-500">Privacy Policy</span>
+                                </label>
                             </div>
+                            <span className="text-red-500 text-xs sm:text-sm">{error.terms}</span>
 
-                            {/* submit button */}
+                            {/* Submit Button */}
                             <button
                                 type="submit"
                                 disabled={loading}
                                 className={`w-full py-3 px-4 rounded-lg hover:from-green-700 hover:to-blue-700 focus:ring-4 focus:ring-green-200 transition-all duration-200 font-medium cursor-pointer bg-gradient-to-r from-green-600 to-blue-600 text-white ${loading ? 'opacity-50 pointer-events-none' : ''}`}
                             >
-                                {loading ?
-
+                                {loading ? (
                                     <div className='flex items-center justify-center space-x-2'>
                                         <div className='animate-spin text-white border-l-2 py-3 px-3 rounded-full'></div>
                                         <div>Submit</div>
-                                    </div> : 'Submit'
-                                }
+                                    </div>
+                                ) : (
+                                    'Submit'
+                                )}
                             </button>
                         </form>
 
-                        {/*  */}
-                        <div className="mt-8 text-center">
-                            <p className="text-gray-600">
-                                Already have an account?{' '}
-                                <NavLink to="/" className="text-green-600 hover:text-green-500 font-medium">
-                                    Sign in
-                                </NavLink>
-                            </p>
+                        {/* Sign in link */}
+                        <div className="mt-8 text-center text-gray-600 text-sm sm:text-base">
+                            Already have an account?{' '}
+                            <NavLink to="/" className="text-green-600 hover:text-green-500 font-medium">
+                                Sign in
+                            </NavLink>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </>
     );
 };
