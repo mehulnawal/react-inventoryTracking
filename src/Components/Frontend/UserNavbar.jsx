@@ -89,13 +89,13 @@ export const UserNavbar = () => {
                                     </Link>
                                 </li>
 
-                                <li>
+                                <li className={`${user?.email == 'admin123@gmail.com' ? 'block' : 'hidden'}`}>
                                     <Link
                                         to="/admin"
                                         className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${theme == 'dark'
                                             ? 'text-gray-300 hover:text-white hover:bg-gray-800'
                                             : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                                            } ${user?.email == 'admin123@gmail.com' ? 'block' : 'hidden'}`}
+                                            } `}
                                     >
                                         <Settings className="w-4 h-4 mr-2" />
                                         Admin Panel
@@ -212,7 +212,7 @@ export const UserNavbar = () => {
                                     className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${theme == 'dark'
                                         ? 'text-gray-300 hover:text-white hover:bg-gray-700'
                                         : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                                        }`}
+                                        } ${user?.email == 'admin123@gmail.com' ? 'block' : 'hidden'}`}
                                 >
                                     <Settings className="w-4 h-4 mr-3" />
                                     Admin Panel

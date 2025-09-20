@@ -206,6 +206,9 @@ export const AdminDashboard = () => {
                             {Object.entries(products).length > 0 && products != null && products != undefined ? (
                                 Object.entries(products).map(([id, product]) => (
                                     <tr key={id} className={`${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}>
+                                        {/* 
+                                        <tr>{id}</tr> */}
+
                                         {/* Image */}
                                         <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">
                                             <div className="flex items-center">
@@ -235,7 +238,7 @@ export const AdminDashboard = () => {
                                         </td>
 
                                         {/* Actions */}
-                                        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap">
+                                        <td className={`px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap ${id == '-O_cPxlcp8WcZIobo1t6' ? 'hidden' : 'block'}`}>
                                             <div className="flex space-x-1 sm:space-x-2">
                                                 <button
                                                     className={`${theme === 'dark' ? 'text-blue-400 hover:bg-blue-900/20' : 'text-blue-600 hover:bg-blue-50'} hover:text-blue-900 p-1.5 sm:p-2 rounded-lg transition-colors`}

@@ -55,7 +55,7 @@ function App() {
             </Route>
 
             {/* Error page - 404  */}
-            {/* <Route path="*" element={<ErrorPage type="404" />} /> */}
+            <Route path="/*" element={<ErrorPage type="404" />} />
 
           </Routes>
         </BrowserRouter>

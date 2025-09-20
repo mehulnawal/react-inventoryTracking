@@ -53,6 +53,7 @@
 // };
 
 import { Mail, User, Building, AlertCircle, Lock } from 'lucide-react';
+import { Link } from 'react-router';
 
 export const ErrorPage = ({ type }) => {
     // Default content for "404"
@@ -90,13 +91,13 @@ export const ErrorPage = ({ type }) => {
                 </div>
 
                 <div className="space-y-4">
-                    <button className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-8 py-3 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 font-medium">
+                    <Link to='/' className="my-3 bg-gradient-to-r from-red-600 to-orange-600 text-white px-8 py-3 rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 font-medium">
                         Go Back Home
-                    </button>
-                    <div className="text-sm text-gray-600">
+                    </Link>
+                    <div className="text-sm text-gray-600 mt-5">
                         <p>
                             Need help?{" "}
-                            <a href="#" className="text-red-600 hover:text-red-500">
+                            <a href="mailto:mehulnawal2904@gmail.com" className="text-red-600 hover:text-red-500">
                                 Contact Support
                             </a>
                         </p>
